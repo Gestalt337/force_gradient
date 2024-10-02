@@ -1,0 +1,45 @@
+# depslib dependency file v1.0
+1727657770 source:/home/haoyuan/Western/Cpp/force_gradient/readdata.cpp
+	"Cell.h"
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+	<sstream>
+
+1727876480 /home/haoyuan/Western/Cpp/force_gradient/Vertex.h
+	<array>
+	<vector>
+
+1727579014 source:/home/haoyuan/Western/Cpp/force_gradient/test.cpp
+	<iostream>
+	<vector>
+	<fstream>
+	<sstream>
+	<unordered_map>
+	<string>
+	"Cell.h"
+
+1727878401 /home/haoyuan/Western/Cpp/force_gradient/Cell.h
+	"Vertex.h"
+	<vector>
+	<algorithm>
+	"Polygon.h"
+	<iostream>
+	<cmath>
+
+1727623640 /home/haoyuan/Western/Cpp/force_gradient/Polygon.h
+	"Vertex.h"
+	<vector>
+
+1727878254 source:/home/haoyuan/Western/Cpp/force_gradient/force.cpp
+	"readdata.h"
+
+1727878346 /home/haoyuan/Western/Cpp/force_gradient/readdata.h
+	"Cell.h"
+	<iostream>
+	<fstream>
+	<string>
+	<vector>
+	<sstream>
+
