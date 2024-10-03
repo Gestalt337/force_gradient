@@ -16,18 +16,19 @@ void compute_force_v(Cell& cl){
             int lenp = size(poly->vertices_);
             for (int k=0;k<lenp;k++){
                 if (poly->vertices_[k]==vtx){
-                    dvdx=dvdx+(1./6) * (Ry*(poly->vertices_[(k-1+lenp)%lenp].pos_[2]-poly->vertices_[k+1].pos_[2])+
-                    Rz*(poly->vertices_[k+1].pos_[1]-poly->vertices_[(k-1+lenp)%lenp].pos_[1]));
-                    dvdy=dvdy-(1./6) * (Rx*(poly->vertices_[(k-1+lenp)%lenp].pos_[2]-poly->vertices_[k+1].pos_[2])+
-                    Rz*(poly->vertices_[k+1].pos_[0]-poly->vertices_[(k-1+lenp)%lenp].pos_[0]));
-                    dvdz=dvdz+(1./6) * (Rx*(poly->vertices_[(k-1+lenp)%lenp].pos_[1]-poly->vertices_[k+1].pos_[1])+
-                    Ry*(poly->vertices_[k+1].pos_[0]-poly->vertices_[(k-1+lenp)%lenp].pos_[0]));
+                    dvdx=dvdx+(1./6) * (Ry*(poly->vertices_[(k-1+lenp)%lenp].pos_[2]-poly->vertices_[(k+1)%lenp].pos_[2])+
+                    Rz*(poly->vertices_[(k+1)%lenp].pos_[1]-poly->vertices_[(k-1+lenp)%lenp].pos_[1]));
+                    dvdy=dvdy-(1./6) * (Rx*(poly->vertices_[(k-1+lenp)%lenp].pos_[2]-poly->vertices_[(k+1)%lenp].pos_[2])+
+                    Rz*(poly->vertices_[(k+1)%lenp].pos_[0]-poly->vertices_[(k-1+lenp)%lenp].pos_[0]));
+                    dvdz=dvdz+(1./6) * (Rx*(poly->vertices_[(k-1+lenp)%lenp].pos_[1]-poly->vertices_[(k+1)%lenp].pos_[1])+
+                    Ry*(poly->vertices_[(k+1)%lenp].pos_[0]-poly->vertices_[(k-1+lenp)%lenp].pos_[0]));
                 }
             }
-        vtx.force_[0] =P*dvdx;
-        vtx.force_[1] =P*dvdy;
-        vtx.force_[2] =P*dvdz;
+        //cout<<ip<<","<<dvdx*6.<<","<<dvdy*6.<<","<<dvdz*6.<<endl;
         }
+    vtx.force_[0] =P*dvdx;
+    vtx.force_[1] =P*dvdy;
+    vtx.force_[2] =P*dvdz;
     }
 };
 
@@ -50,10 +51,9 @@ void compute_force_a(Cell cl){
 int main(){
 
     Cell a = read_faces(read_vertices())[0];
-//    cout<< a.get_area()<<endl;
-//    for (auto i:a.vertices_[2].face_ids_){
-//        cout<< i<<endl;
-//    };
+//    a.get_volume();
+//    cout<<a.vertices_[1].id_<<a.vertices_[1].pos_[0]<<a.vertices_[1].pos_[1]<<a.vertices_[1].pos_[2]<<endl;
+//    cout<<a.get_volume()<<endl;
     compute_force_v(a);
     for (auto v:a.vertices_){
         cout<<v.id_<<endl;

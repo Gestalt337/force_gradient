@@ -35,9 +35,9 @@ public:
     double get_volume(){
         double v = 0.;
         for (int j=0;j<cjs_.size();j++){
-            double Rx = cjs_[j][0]-center_[0];
-            double Ry = cjs_[j][1]-center_[1];
-            double Rz = cjs_[j][2]-center_[2];
+            double Rx = cjs_[j][0];
+            double Ry = cjs_[j][1];
+            double Rz = cjs_[j][2];
             int nv = polygons_[j].vertices_.size();
             double crx=0., cry=0., crz=0.;
             for (int i=0;i<nv;i++){
@@ -49,12 +49,21 @@ public:
 //                double rint2z= polygons_[j].vertices_[(i+1)%nv].pos_[2]-center_[2];
 //                double crx = crx+ rint1y*rint2z - rint1z*rint2y;
                 auto vset=polygons_[j].vertices_;
-                crx = crx + move(vset)[i].pos_[1]*move(vset)[(i+1)%nv].pos_[2]-move(vset)[i].pos_[2]*move(vset)[(i+1)%nv].pos_[1]+
-                (move(vset)[(i+1)%nv].pos_[1]-move(vset)[i].pos_[1])*center_[2]+(move(vset)[i].pos_[2]-move(vset)[(i+1)%nv].pos_[2])*center_[1];
-                cry = cry-(move(vset)[i].pos_[0]*move(vset)[(i+1)%nv].pos_[2]-move(vset)[i].pos_[2]*move(vset)[(i+1)%nv].pos_[0]+
-                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[2]+(move(vset)[i].pos_[2]-move(vset)[(i+1)%nv].pos_[2])*center_[0]);
-                crz = crz+move(vset)[i].pos_[0]*move(vset)[(i+1)%nv].pos_[1]-move(vset)[i].pos_[1]*move(vset)[(i+1)%nv].pos_[0]+
-                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[1]+(move(vset)[i].pos_[1]-move(vset)[(i+1)%nv].pos_[1])*center_[0];
+//                crx = crx + move(vset)[i].pos_[1]*move(vset)[(i+1)%nv].pos_[2]-move(vset)[i].pos_[2]*move(vset)[(i+1)%nv].pos_[1]+
+//                (move(vset)[(i+1)%nv].pos_[1]-move(vset)[i].pos_[1])*center_[2]+(move(vset)[i].pos_[2]-move(vset)[(i+1)%nv].pos_[2])*center_[1];
+//                cry = cry-(move(vset)[i].pos_[0]*move(vset)[(i+1)%nv].pos_[2]-move(vset)[i].pos_[2]*move(vset)[(i+1)%nv].pos_[0]+
+//                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[2]+(move(vset)[i].pos_[2]-move(vset)[(i+1)%nv].pos_[2])*center_[0]);
+//                crz = crz+move(vset)[i].pos_[0]*move(vset)[(i+1)%nv].pos_[1]-move(vset)[i].pos_[1]*move(vset)[(i+1)%nv].pos_[0]+
+//                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[1]+(move(vset)[i].pos_[1]-move(vset)[(i+1)%nv].pos_[1])*center_[0];
+                double xi=vset[i].pos_[0]-center_[0];
+                double yi=vset[i].pos_[1]-center_[1];
+                double zi=vset[i].pos_[2]-center_[2];
+                double xi1=vset[(i+1)%nv].pos_[0]-center_[0];
+                double yi1=vset[(i+1)%nv].pos_[1]-center_[1];
+                double zi1=vset[(i+1)%nv].pos_[2]-center_[2];
+                crx=crx+yi*zi1-zi*yi1;
+                cry=cry-xi*zi1+zi*xi1;
+                crz=crz+xi*yi1-yi*xi1;
             }
             v=v+Rx*crx+Ry*cry+Rz*crz;
         }
@@ -102,11 +111,17 @@ public:
         double cjz= p_add.center_[2] - center_[2];
 
         cjs_.push_back(array<double,3>{cjx,cjy,cjz});
+        double r1x=p_add.vertices_[0].pos_[0]-center_[0];
+        double r1y=p_add.vertices_[0].pos_[1]-center_[1];
+        double r1z=p_add.vertices_[0].pos_[2]-center_[2];
+        double r2x=p_add.vertices_[1].pos_[0]-center_[0];
+        double r2y=p_add.vertices_[1].pos_[1]-center_[1];
+        double r2z=p_add.vertices_[1].pos_[2]-center_[2];
 
-        double r12x = p_add.vertices_[0].pos_[1]*p_add.vertices_[1].pos_[2] - p_add.vertices_[0].pos_[2]*p_add.vertices_[1].pos_[1];
-        double r12y = -p_add.vertices_[0].pos_[0]*p_add.vertices_[1].pos_[2] + p_add.vertices_[0].pos_[2]*p_add.vertices_[1].pos_[0];
-        double r12z = p_add.vertices_[0].pos_[0]*p_add.vertices_[1].pos_[1] - p_add.vertices_[0].pos_[1]*p_add.vertices_[1].pos_[0];
-        double dp=cjx*r12x+cjy*r12y+cjz*r12z;
+        double r12x = r1y*r2z-r1z*r2y;
+        double r12y =-r1x*r2z+r1z*r2x;
+        double r12z = r1x*r2y-r1y*r2x;
+        double dp=r12x*cjx+r12y*cjy+r12z*cjz;
 
         if (dp<0){reverse(ind_l.begin(), ind_l.end());}
 
