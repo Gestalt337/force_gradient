@@ -59,7 +59,7 @@ public:
             v=v+Rx*crx+Ry*cry+Rz*crz;
         }
         volume_ = v*1/6;
-        return volume_;
+        return v*1/6;
     }
 
     double get_area(){
@@ -88,10 +88,10 @@ public:
         for(auto j:ind_l){
             for(auto i:move(vertices_)){
                 if (i.id_==j)
-                    ret_l.push_back(move(i));
+                    move(ret_l).push_back(move(i));
             };
         };
-        return ret_l;
+        return move(ret_l);
     };
 
     void add_polygon(const int id, vector<int>& ind_l){
@@ -112,11 +112,20 @@ public:
 
         p_add.vertices_= get_vertex(ind_l);
 
-        polygons_.push_back(p_add);
+        polygons_.push_back(move(p_add));
         for (int i:ind_l){
             vertices_[i].face_ids_.push_back(id);
         }
 
+    };
+
+    Polygon* get_poly_from_id(int idn){
+        for (auto &p:polygons_){
+            if (p.id_==idn){
+                return &p;
+            }
+        }
+        return nullptr;
     };
 
     //Cell(int id, vector<Vertex> vertices) : id_(id), vertices_(vertices) {};

@@ -25,6 +25,15 @@ public:
         center_={xs/ns,ys/ns,zs/ns};
     };
 
+    Vertex* get_vt_from_id(int idn){
+        for (auto &vt:vertices_){
+            if (vt.id_==idn){
+                return &vt;
+            }
+        }
+        return nullptr;
+    };
+
 
     Polygon(int id, vector<Vertex>&& vertices) : id_(id), vertices_(vertices) {get_center();};
 
