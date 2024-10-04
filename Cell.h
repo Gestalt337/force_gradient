@@ -69,25 +69,30 @@ public:
         }
         volume_ = v*1/6;
         return v*1/6;
-    }
+    };
 
     double get_area(){
         double A=0;
         for (int j=0;j<cjs_.size();j++){
             array<double, 3> R=cjs_[j];
             int nv = polygons_[j].vertices_.size();
+            Polygon* poly=&polygons_[j];
             for (int i=0;i<nv;i++){
-                auto aset=polygons_[j].vertices_;
+                Vertex* vi=&poly->vertices_[i];
                 int l = (i+1)%nv;
-                double Ax=move(aset)[i].pos_[1]*move(aset)[l].pos_[2]-move(aset)[i].pos_[2]*move(aset)[l].pos_[1]+
-                (move(aset)[l].pos_[1]-move(aset)[i].pos_[1])*R[2]+(move(aset)[i].pos_[2]-move(aset)[l].pos_[2])*R[1];
-                double Ay=move(aset)[i].pos_[0]*move(aset)[l].pos_[2]-move(aset)[i].pos_[2]*move(aset)[l].pos_[0]+ //up to a neg sign...
-                (move(aset)[l].pos_[0]-move(aset)[i].pos_[0])*R[2]+(move(aset)[i].pos_[2]-move(aset)[l].pos_[2])*R[0];
-                double Az=move(aset)[i].pos_[0]*move(aset)[l].pos_[1]-move(aset)[i].pos_[1]*move(aset)[l].pos_[0]+
-                (move(aset)[l].pos_[0]-move(aset)[i].pos_[0])*R[1]+(move(aset)[i].pos_[1]-move(aset)[l].pos_[1])*R[0];
-                A = A+sqrt(pow(Ax,2)+pow(Ay,2)+pow(Az,2));
+                Vertex* vl=&poly->vertices_[l];
+                double xi=vi->pos_[0]-center_[0];
+                double yi=vi->pos_[1]-center_[1];
+                double zi=vi->pos_[2]-center_[2];
+                double xl=vl->pos_[0]-center_[0];
+                double yl=vl->pos_[1]-center_[1];
+                double zl=vl->pos_[2]-center_[2];
+                double Ax=yi*zl-zi*yl+R[1]*(zi-zl)+R[2]*(yl-yi);
+                double Ay=-(xi*zl-zi*xl+R[0]*(zi-zl)+R[2]*(xl-xi));
+                double Az=xi*yl-yi*xl+R[0]*(yi-yl)+R[1]*(xl-xi);
+                A += sqrt(pow(Ax,2)+pow(Ay,2)+pow(Az,2));
             };
-        }
+        };
         area_tot_=A*0.5;
         return A*0.5;
     };

@@ -4,12 +4,12 @@
 Created on Sat Sep 28 11:40:38 2024
 
 @author: Haoyuan Shi
+Contact: hshi254@uwo.ca
 """
 
 import pyvoro
-import csv
 
-cells = pyvoro.compute_voronoi([[0,0,0],[0.5,0.5,0.5],[-0.5,0.5,0.5]], [[-1,1],[-1,1],[-1,1]], 1)
+cells = pyvoro.compute_voronoi([[0,0,0]], [[-1,1],[-1,1],[-1,1]], 1)
 save = False
 
 print(cells)
