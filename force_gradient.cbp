@@ -22,17 +22,30 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Cell.h" />
-		<Unit filename="Polygon.h" />
-		<Unit filename="Vertex.h" />
+		<Unit filename="Cell.h">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
+		<Unit filename="Collection.h">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
+		<Unit filename="Polygon.h">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
+		<Unit filename="Vertex.h">
+			<Option compile="1" />
+			<Option link="1" />
+		</Unit>
 		<Unit filename="cells.csv" />
-		<Unit filename="force.cpp" />
-		<Unit filename="originals.csv" />
-		<Unit filename="readdata.h" />
-		<Unit filename="test.cpp">
+		<Unit filename="force.cpp">
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="originals.csv" />
+		<Unit filename="readdata.h" />
+		<Unit filename="test.cpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -12,7 +12,7 @@ using namespace std;
 class Cell
 {
 public:
-    vector<Vertex> vertices_;
+    vector<Vertex*> vertices_;
     //array<int> V_ind_;
     const int id_;
     vector<Polygon> polygons_={};
@@ -25,9 +25,9 @@ public:
         double xs=0, ys=0, zs=0;
         int ns = static_cast<int>(vertices_.size());
         for (auto i: vertices_)
-            {xs = xs + i.pos_[0];
-            ys = ys+ i.pos_[1];
-            zs =zs+ i.pos_[2];}
+            {xs = xs + i->pos_[0];
+            ys = ys+ i->pos_[1];
+            zs =zs+ i->pos_[2];}
         //center_ = {xs/ns,ys/ns,zs/ns};
         center_={xs/ns,ys/ns,zs/ns};
     };
@@ -55,12 +55,12 @@ public:
 //                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[2]+(move(vset)[i].pos_[2]-move(vset)[(i+1)%nv].pos_[2])*center_[0]);
 //                crz = crz+move(vset)[i].pos_[0]*move(vset)[(i+1)%nv].pos_[1]-move(vset)[i].pos_[1]*move(vset)[(i+1)%nv].pos_[0]+
 //                (move(vset)[(i+1)%nv].pos_[0]-move(vset)[i].pos_[0])*center_[1]+(move(vset)[i].pos_[1]-move(vset)[(i+1)%nv].pos_[1])*center_[0];
-                double xi=vset[i].pos_[0]-center_[0];
-                double yi=vset[i].pos_[1]-center_[1];
-                double zi=vset[i].pos_[2]-center_[2];
-                double xi1=vset[(i+1)%nv].pos_[0]-center_[0];
-                double yi1=vset[(i+1)%nv].pos_[1]-center_[1];
-                double zi1=vset[(i+1)%nv].pos_[2]-center_[2];
+                double xi=vset[i]->pos_[0]-center_[0];
+                double yi=vset[i]->pos_[1]-center_[1];
+                double zi=vset[i]->pos_[2]-center_[2];
+                double xi1=vset[(i+1)%nv]->pos_[0]-center_[0];
+                double yi1=vset[(i+1)%nv]->pos_[1]-center_[1];
+                double zi1=vset[(i+1)%nv]->pos_[2]-center_[2];
                 crx=crx+yi*zi1-zi*yi1;
                 cry=cry-xi*zi1+zi*xi1;
                 crz=crz+xi*yi1-yi*xi1;
@@ -78,9 +78,9 @@ public:
             int nv = polygons_[j].vertices_.size();
             Polygon* poly=&polygons_[j];
             for (int i=0;i<nv;i++){
-                Vertex* vi=&poly->vertices_[i];
+                Vertex* vi=poly->vertices_[i];
                 int l = (i+1)%nv;
-                Vertex* vl=&poly->vertices_[l];
+                Vertex* vl=poly->vertices_[l];
                 double xi=vi->pos_[0]-center_[0];
                 double yi=vi->pos_[1]-center_[1];
                 double zi=vi->pos_[2]-center_[2];
@@ -97,44 +97,45 @@ public:
         return A*0.5;
     };
 
-    vector<Vertex> get_vertex(vector<int>& ind_l){
-        vector<Vertex> ret_l;
+    vector<Vertex*> get_vertex(vector<int>& ind_l){
+        vector<Vertex*> ret_l;
         for(auto j:ind_l){
             for(auto i:move(vertices_)){
-                if (i.id_==j)
-                    move(ret_l).push_back(move(i));
+                if (i->id_==j)
+                    move(ret_l).push_back(i);
             };
         };
         return move(ret_l);
     };
 
-    void add_polygon(const int id, vector<int>& ind_l){
-        Polygon p_add = Polygon(id, get_vertex(ind_l));
+    void add_polygon(const int id, vector<Vertex*>& pptrs,int wall){
+        Polygon p_add = Polygon(id, pptrs);
+        p_add.is_wall = wall;
 
         double cjx= p_add.center_[0] - center_[0];
         double cjy= p_add.center_[1] - center_[1];
         double cjz= p_add.center_[2] - center_[2];
 
         cjs_.push_back(array<double,3>{cjx,cjy,cjz});
-        double r1x=p_add.vertices_[0].pos_[0]-center_[0];
-        double r1y=p_add.vertices_[0].pos_[1]-center_[1];
-        double r1z=p_add.vertices_[0].pos_[2]-center_[2];
-        double r2x=p_add.vertices_[1].pos_[0]-center_[0];
-        double r2y=p_add.vertices_[1].pos_[1]-center_[1];
-        double r2z=p_add.vertices_[1].pos_[2]-center_[2];
+        double r1x=p_add.vertices_[0]->pos_[0]-center_[0];
+        double r1y=p_add.vertices_[0]->pos_[1]-center_[1];
+        double r1z=p_add.vertices_[0]->pos_[2]-center_[2];
+        double r2x=p_add.vertices_[1]->pos_[0]-center_[0];
+        double r2y=p_add.vertices_[1]->pos_[1]-center_[1];
+        double r2z=p_add.vertices_[1]->pos_[2]-center_[2];
 
         double r12x = r1y*r2z-r1z*r2y;
         double r12y =-r1x*r2z+r1z*r2x;
         double r12z = r1x*r2y-r1y*r2x;
         double dp=r12x*cjx+r12y*cjy+r12z*cjz;
 
-        if (dp<0){reverse(ind_l.begin(), ind_l.end());}
+        if (dp<0){reverse(pptrs.begin(), pptrs.end());}
 
-        p_add.vertices_= get_vertex(ind_l);
+        p_add.vertices_= pptrs;
 
         polygons_.push_back(move(p_add));
-        for (int i:ind_l){
-            vertices_[i].face_ids_.push_back(id);
+        for (Vertex* i:pptrs){
+            i->face_ids_.push_back(id);
         }
 
     };
@@ -142,7 +143,8 @@ public:
     Polygon* get_poly_from_id(int idn){
         for (auto &p:polygons_){
             if (p.id_==idn){
-                return &p;
+                Polygon* pptr = &p;
+                return pptr;
             }
         }
         return nullptr;
@@ -160,7 +162,7 @@ public:
 //    };
 //    get_center();};
 
-    Cell(int id, vector<Vertex>&& vertices): id_(id), vertices_(vertices) {
+    Cell(int id, vector<Vertex*>& vertices): id_(id), vertices_(vertices) {
     get_center();
     };
 

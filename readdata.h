@@ -19,7 +19,7 @@ vector<Cell> read_vertices(){
 //        return 1;
 //    }
 
-    vector<Vertex> Vs={};
+    vector<Vertex*> Vs={};
     int nc = -1;
     std::string line;
 
@@ -41,7 +41,7 @@ vector<Cell> read_vertices(){
         int id = stoi(row[0]);
         array<double,3> V{stod(row[1]),stod(row[2]),stod(row[3])};
         Vertex Vt(id,V);
-        Vs.push_back(move(Vt));
+        Vs.push_back(move(&Vt));
     }
 };
 

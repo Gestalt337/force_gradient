@@ -7,20 +7,20 @@
 	<vector>
 	<sstream>
 
-1727876480 /home/haoyuan/Western/Cpp/force_gradient/Vertex.h
+1728052155 /home/haoyuan/Western/Cpp/force_gradient/Vertex.h
 	<array>
 	<vector>
 
-1727579014 source:/home/haoyuan/Western/Cpp/force_gradient/test.cpp
+1728238280 source:/home/haoyuan/Western/Cpp/force_gradient/test.cpp
 	<iostream>
 	<vector>
 	<fstream>
 	<sstream>
 	<unordered_map>
 	<string>
-	"Cell.h"
+	"Collection.h"
 
-1728009377 /home/haoyuan/Western/Cpp/force_gradient/Cell.h
+1728237557 /home/haoyuan/Western/Cpp/force_gradient/Cell.h
 	"Vertex.h"
 	<vector>
 	<algorithm>
@@ -28,18 +28,44 @@
 	<iostream>
 	<cmath>
 
-1727917164 /home/haoyuan/Western/Cpp/force_gradient/Polygon.h
+1728237045 /home/haoyuan/Western/Cpp/force_gradient/Polygon.h
 	"Vertex.h"
 	<vector>
 
-1728008864 source:/home/haoyuan/Western/Cpp/force_gradient/force.cpp
+1728068449 source:/home/haoyuan/Western/Cpp/force_gradient/force.cpp
 	"readdata.h"
 
-1727878346 /home/haoyuan/Western/Cpp/force_gradient/readdata.h
+1728068218 /home/haoyuan/Western/Cpp/force_gradient/readdata.h
 	"Cell.h"
 	<iostream>
 	<fstream>
 	<string>
 	<vector>
+	<sstream>
+
+1728237557 source:/home/haoyuan/Western/Cpp/force_gradient/Cell.h
+	"Vertex.h"
+	<vector>
+	<algorithm>
+	"Polygon.h"
+	<iostream>
+	<cmath>
+
+1728238162 source:/home/haoyuan/Western/Cpp/force_gradient/Collection.h
+	"Cell.h"
+	<fstream>
+	<sstream>
+
+1728237045 source:/home/haoyuan/Western/Cpp/force_gradient/Polygon.h
+	"Vertex.h"
+	<vector>
+
+1728052155 source:/home/haoyuan/Western/Cpp/force_gradient/Vertex.h
+	<array>
+	<vector>
+
+1728238162 /home/haoyuan/Western/Cpp/force_gradient/Collection.h
+	"Cell.h"
+	<fstream>
 	<sstream>
 
