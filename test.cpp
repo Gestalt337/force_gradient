@@ -1,24 +1,13 @@
 #include <iostream>
-//#include "Vertices.h"
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <unordered_map>
 #include <string>
-#include "Collection.h"
+#Collection.h"
+
+
+using namespace std;
 
 
 int main() {
-    Collection C;
-    C.get_vertices();
-    cout<<C.vertices_[0].id_<<endl;
-    C.get_cells();
-
-
-
-
-
-
-
+    Collection C("data/vertices.csv","data/cells.csv","data/polygons.csv");
+    cout<<C.vertices_[0].pos_[0]<<C.vertices_[0].pos_[1]<<C.vertices_[0].pos_[2]<<"duhovo"<<endl;
     return 0;
 }
