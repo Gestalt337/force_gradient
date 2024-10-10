@@ -25,6 +25,7 @@
 		<Unit filename="Cell.h" />
 		<Unit filename="Collection.h" />
 		<Unit filename="Polygon.h" />
+		<Unit filename="Run.cpp" />
 		<Unit filename="Vertex.h" />
 		<Unit filename="data/cell.csv" />
 		<Unit filename="data/polygon.csv" />

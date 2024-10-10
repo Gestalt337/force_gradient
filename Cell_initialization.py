@@ -54,21 +54,6 @@ class Cell:
             s+='\n'
             s+=str(poly)
         return s
-    
-# def dumplist(l):
-#     s = ''
-#     l1 = l[1:]
-#     s+= str(l[0])
-#     for item in l1:
-#         s += ', '
-#         s += str(item)
-#     return s
-
-# def get_vt_id(vid,l):
-#     for v in l:
-#         if v.idn_ ==vid:
-#             return v
-#     return None
 
 def generatePoints(Lx, Ly, Lz):
     from datetime import datetime
@@ -86,9 +71,9 @@ def generatePoints(Lx, Ly, Lz):
     return points 
 
 def voronoi():
-    Lx, Ly, Lz = (1, 1, 1)
-    #points = generatePoints(Lx, Ly, Lz)
-    points = [[0, 0, 0]]
+    Lx, Ly, Lz = (8, 8, 8)
+    points = generatePoints(Lx, Ly, Lz)
+    #points = [[0, 0, 0],[0.5,0.5,0.5]]
     voroDict = pyvoro.compute_voronoi(
         points,  # point positions
         [[-Lx, Lx], [-Ly, Ly], [-Lz, Lz]],  # limits
@@ -97,28 +82,21 @@ def voronoi():
     return voroDict
 
 def create_data(voroDict):
-    vertex_l = []
-    nc = 0
-    cell_l = []
-    i=0
+    vertex_l, cell_l = [], []
+    nc, i = 0, 0
     for cell in voroDict:
         l=0
         vs = np.round(cell['vertices'],2).tolist()
-        rep_d = {}
-        nrep_d = {}
-
+        rep_d, nrep_d = {}, {}
         for position in vs:
             if len(vertex_l) !=0:
                 eq_vtx = next((v.idn_ for v in vertex_l if v.pos_ == position), -1)
                 if eq_vtx==-1:
-                    #print('new vertex',position)
                     vertex_l.append(Vertex(i,position))
                     nrep_d[l]=i
                     i+=1
                     l+=1
                 else:
-                    #print('old vertex',position)
-                    #vertex_l.append(Vertex(-eq_vtx.idn_-1,(nc,l),position))
                     rep_d[l]=eq_vtx
                     l+=1
             else:
@@ -126,8 +104,6 @@ def create_data(voroDict):
                 nrep_d[l]=i
                 i+=1
                 l+=1
-        #print(rep_d)
-        #print(nrep_d)
         
         fs = cell['faces']
         polys = []
@@ -156,7 +132,7 @@ def create_data(voroDict):
         nc+=1
     return vertex_l,cell_l
 
-v = voronoi()
+#v = voronoi()
 
 def save_data():
     vertex_l,cell_l=create_data(voronoi())

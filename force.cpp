@@ -4,7 +4,7 @@ double kv=10., ka=1., V0=1., s0=5.4, gm=1.;
 
 void compute_force_v(Collection& C){
 
-    for (Cell cl:C.cells_){
+    for (Cell& cl:C.cells_){
     double V = cl.get_volume();
     double P = 2.*kv*(V-V0);
     for (Vertex* vtx:cl.vertices_){
@@ -35,7 +35,7 @@ void compute_force_v(Collection& C){
 
 void compute_force_a(Collection& C){
 
-    for (Cell cl:C.cells_){
+    for (Cell& cl:C.cells_){
     double A = cl.get_area();
     double T = 2.*ka*(A-s0);
     for (Vertex* vtx:cl.vertices_){
@@ -93,14 +93,53 @@ void compute_force_a(Collection& C){
 }
 }
 
+void dump_data(Collection& coll){
+
+    int v_num = 0;
+    int p_num = 0;
+    for(Cell& c:coll.cells_){
+        p_num+=c.polygons_.size();
+        for(Polygon& poly:c.polygons_){
+            for(Vertex* v:poly.vertices_){
+                v_num+=1;
+            }
+        }
+    }
+
+ofstream outFile("data.vtk");
+    outFile<<"# vtk DataFile Version 3.0\npolydata\nASCII\nDATASET POLYDATA\n";
+    outFile<<"POINTS " + to_string(coll.vertices_.size())+" double\n";
+    for(Vertex& v: coll.vertices_){
+        outFile<<to_string(v.pos_[0])+" "+to_string(v.pos_[1])+" "+to_string(v.pos_[2])+"\n";
+    }
+    outFile<<"\n";
+    outFile<<"POLYGONS "+to_string(p_num)+" "+to_string(p_num+v_num)+"\n";
+    for(Cell& c:coll.cells_){
+        p_num+=c.polygons_.size();
+        for(Polygon& poly:c.polygons_){
+            outFile<<to_string(poly.vertices_.size())+" ";
+            for(Vertex* v:poly.vertices_){
+                outFile<<to_string(v->id_)+" ";
+            }
+            outFile<<"\n";
+
+        }
+    }
+    outFile.close();
+
+
+}
+
+
 
 int main(){
 
     Collection C("data/vertices.csv","data/cell.csv","data/polygon.csv");
     compute_force_v(C);
     compute_force_a(C);
-    for (auto v:C.vertices_){cout<<v.force_[0]<<","<<v.force_[1]<<","<<v.force_[2]<<endl;}
-
+    //for (auto v:C.vertices_){cout<<v.force_[0]<<","<<v.force_[1]<<","<<v.force_[2]<<endl;}
+    cout<<C.cells_[0].volume_<<endl;
+    dump_data(C);
     //2024/10/06
 
 
