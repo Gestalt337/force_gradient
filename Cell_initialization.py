@@ -71,7 +71,9 @@ def generatePoints(Lx, Ly, Lz):
     return points 
 
 def voronoi():
-    Lx, Ly, Lz = (8, 8, 8)
+    Lx = int(input("Lx: ")or 8)
+    Ly = int(input("Ly: ")or 8)
+    Lz = int(input("Lz: ")or 8)
     points = generatePoints(Lx, Ly, Lz)
     #points = [[0, 0, 0],[0.5,0.5,0.5]]
     voroDict = pyvoro.compute_voronoi(
