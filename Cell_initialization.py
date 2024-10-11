@@ -29,7 +29,7 @@ class Polygon:
         for vertex_id in self.vertices_:
             s+=str(vertex_id)
             s+=','
-        s+=str(self.is_wall_)
+        #s+=str(self.is_wall_)
         return s
 
 class Cell:
