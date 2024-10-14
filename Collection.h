@@ -100,9 +100,10 @@ void get_polygons(){
         else{
             vector<Vertex*> vts;
             int pid=stoi(row[0]);
-            int is_wall=stoi(row.back());
+            //int is_wall=stoi(row.back());
+            int is_wall = 0;
             row.erase(row.begin());
-            row.pop_back();
+            //row.pop_back();
 
             for(auto i:row){vts.push_back(get_vertex(stoi(i)));}
 
