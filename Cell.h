@@ -21,8 +21,7 @@ public:
     double area_tot_;
 
     Cell(int id, vector<Vertex*>& vertices): id_(id), vertices_(vertices) {
-        get_center();
-    }
+        get_center();}
 
     void get_center() {
         double xs = 0, ys = 0, zs = 0;
@@ -35,7 +34,7 @@ public:
         center_ = {xs/ns, ys/ns, zs/ns};
     }
 
-    double get_volume() {
+    void get_volume() {
         double v = 0.;
         for (size_t j = 0; j < cjs_.size(); j++) {
             const auto& R = cjs_[j];
@@ -57,10 +56,10 @@ public:
             v += R[0]*crx + R[1]*cry + R[2]*crz;
         }
         volume_ = v / 6;
-        return volume_;
+        //return volume_;
     }
 
-    double get_area() {
+    void get_area() {
         double A = 0;
         for (size_t j = 0; j < cjs_.size(); j++) {
             const auto& R = cjs_[j];
@@ -81,7 +80,7 @@ public:
             }
         }
         area_tot_ = A * 0.5;
-        return area_tot_;
+        //return area_tot_;
     }
 
     void add_polygon(const int id, vector<Vertex*>& pptrs, int wall) {

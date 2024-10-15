@@ -1,13 +1,16 @@
 #include "Collection.h"
+#include "variables.h"
 
-double kv=10., ka=1., V0=1., s0=5.4, gm=1.;
+void Collection::compute_force(){
+    // Reset forces
+    for (Vertex &vtx:vertices_){
+        vtx.force_={0.,0.,0.};
+    }
 
-void compute_force(Collection& C){
-
-    for (Cell& cl:C.cells_){
-        double V = cl.get_volume();
+    for (Cell& cl:cells_){
+        double V = cl.volume_/V0;
         double P = 2.*kv*(V-V0);
-        double A = cl.get_area();
+        double A = cl.area_tot_/pow(V0,2./3);
         double T = 2.*ka*(A-s0);
         int lenv =cl.vertices_.size();
         for (Vertex* vtx:cl.vertices_){
@@ -141,50 +144,46 @@ void compute_force(Collection& C){
 //}
 //}
 
-void dump_data(Collection& coll){
-
-    int v_num = 0;
-    int p_num = 0;
-    string wrt="";
-    wrt.append("# vtk DataFile Version 3.0\npolydata\nASCII\nDATASET POLYDATA\n");
-    wrt.append("POINTS " + to_string(coll.vertices_.size())+" double\n");
-    for(Vertex& v: coll.vertices_){
-        wrt.append(to_string(v.pos_[0])+" "+to_string(v.pos_[1])+" "+to_string(v.pos_[2])+"\n");
-    }
-    wrt.append("\n");
-    string to_find = "PLACEHOLDER";
-    wrt.append(to_find);
-    //s+="POLYGONS "+to_string(p_num)+" "+to_string(p_num+v_num)+"\n";
-    for(Cell& c:coll.cells_){
-        p_num+=c.polygons_.size();
-        for(Polygon& poly:c.polygons_){
-            wrt.append(to_string(poly.vertices_.size())+" ");
-            for(Vertex* v:poly.vertices_){
-                wrt.append(to_string(v->id_)+" ");
-                v_num+=1;
-            }
-            wrt.append("\n");
+// I am neglecting Brownain motion for now.
+void Collection::compute_velocity(){
+//for (Vertex& vertex : vertices_) {
+//        vertex.velocity_={0.,0.,0.}; //reset velocity
+    for (Vertex& vertex : vertices_) {
+        for (int m = 0; m < 3; ++m) {
+            vertex.velocity_[m] = mu * vertex.force_[m];
         }
     }
-    size_t pos = wrt.find(to_find);
-    wrt.replace(pos, to_find.size(), "POLYGONS "+to_string(p_num)+" "+to_string(p_num+v_num)+"\n");
-    ofstream outFile("data.vtk");
-    outFile<<wrt;
-    outFile.close();
-}
+    // remove drift velocity
+    double average_velo[3] = {0., 0., 0.};
+    for (Vertex& vertex : vertices_) {
+        for (int m = 0; m < 3; ++m) {
+            average_velo[m] += vertex.velocity_[m];
+        }
+    }
+    for (int m = 0; m < 3; m++) {
+        average_velo[m] /= vertices_.size();
+    }
+    for (Vertex& vertex : vertices_) {
+        for (int m = 0; m < 3; m++) {
+            vertex.velocity_[m] = vertex.velocity_[m] - average_velo[m];
+        }
+    }
+};
 
-
-
-int main(){
-
-    Collection C("data/vertices.csv","data/cell.csv","data/polygon.csv");
-    compute_force(C);
-    for (auto v:C.vertices_){cout<<v.force_[0]<<","<<v.force_[1]<<","<<v.force_[2]<<endl;}
-    //cout<<C.cells_[0].volume_<<endl;
-    dump_data(C);
-    //2024/10/14
-
-
-    return 0;
-
-}
+void Collection::update_cell(){
+    num_iters_ += 1;
+    for (int i = 0; i < vertices_.size(); ++i) {
+        for (int m = 0; m < 3; m++) {
+            vertices_[i].pos_[m] += vertices_[i].velocity_[m]*dt;
+        }
+    }
+    // Recalculate cell geometric.
+    for (Cell &cell:cells_){
+        cell.get_center();
+        cell.get_volume();
+        cell.get_area();
+        for (Polygon& poly:cell.polygons_){
+            poly.get_center();
+        }
+    }
+};

@@ -26,15 +26,12 @@
 		<Unit filename="Collection.h" />
 		<Unit filename="Polygon.h" />
 		<Unit filename="Run.cpp" />
+		<Unit filename="Update.cpp" />
 		<Unit filename="Vertex.h" />
 		<Unit filename="data/cell.csv" />
 		<Unit filename="data/polygon.csv" />
 		<Unit filename="data/vertices.csv" />
-		<Unit filename="force.cpp" />
-		<Unit filename="test.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
+		<Unit filename="variables.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

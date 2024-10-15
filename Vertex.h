@@ -12,6 +12,7 @@ public:
     const int id_;
     array<double,3> pos_;
     array<double, 3> force_={0,0,0};
+    array<double, 3> velocity_={0,0,0};
     map<int,vector<int>> face_ids_;
 
     Vertex(int id, const array<double,3> &pos) : id_(id), pos_(pos) {};

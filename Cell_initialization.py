@@ -63,9 +63,9 @@ def generatePoints(Lx, Ly, Lz):
     points = []
     for i in range(Nvertices):
         point = []
-        point.append(np.random.uniform(-Lx, Lx))
-        point.append(np.random.uniform(-Ly, Ly))
-        point.append(np.random.uniform(-Lz, Lz))
+        point.append(np.random.uniform(0, Lx))
+        point.append(np.random.uniform(0, Ly))
+        point.append(np.random.uniform(0, Lz))
         points.append(point)
 
     return points 
@@ -75,10 +75,10 @@ def voronoi():
     Ly = int(input("Ly: ")or 8)
     Lz = int(input("Lz: ")or 8)
     #points = generatePoints(Lx, Ly, Lz)
-    points = [[0, 0, 0]]
+    points = [[0.5, 0.5, 0.5]]
     voroDict = pyvoro.compute_voronoi(
         points,  # point positions
-        [[-Lx, Lx], [-Ly, Ly], [-Lz, Lz]],  # limits
+        [[0, Lx], [0, Ly], [0, Lz]],  # limits
         2.0,  # block size
         periodic = [True, True, True])
     return voroDict
