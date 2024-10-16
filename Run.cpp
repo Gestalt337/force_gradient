@@ -6,7 +6,7 @@ using namespace std;
 long int max_iters=50;
 int save_iters=1;
 
-void dump_data(Collection& coll){
+void dump_vtk(Collection& coll){
     int v_num = 0;
     int p_num = 0;
     string wrt="";
@@ -32,37 +32,44 @@ void dump_data(Collection& coll){
     }
     size_t pos = wrt.find(to_find);
     wrt.replace(pos, to_find.size(), "POLYGONS "+to_string(p_num)+" "+to_string(p_num+v_num)+"\n");
-    ofstream outFile("data/output/"+to_string(coll.num_iters_)+".vtk");
+    ofstream outFile("data/output/vtk/"+to_string(coll.num_iters_)+".vtk");
     outFile<<wrt;
     outFile.close();
 }
 
 void run(){
-    filesystem::remove_all("data/output/");
-    filesystem::create_directories("data/output/");
+    filesystem::remove_all("data/output/vtk/");
+    filesystem::create_directories("data/output/vtk/");
     //Set up collection
     Collection C(0);
-    dump_data(C);
-    for (long int i=0; i<max_iters; ++i){
+    dump_vtk(C);
+    ofstream volumeFile("data/output/volume.txt");
+    ofstream areaFile("data/output/area.txt");
+    for (int ic=0;ic<C.cells_.size();ic++){
+        volumeFile<<"ITER "+to_string(C.num_iters_)+"\n";
+        areaFile<<"ITER "+to_string(C.num_iters_)+"\n";
+        volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)+"\n";
+        areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)+"\n";
+    }
+    for (long int i=0; i<max_iters-1; ++i){
         C.compute_force();
         C.compute_velocity();
         C.update_cell();
         if (C.num_iters_%save_iters==0){
-            dump_data(C);
+            dump_vtk(C);
+            for (int ic=0;ic<C.cells_.size();ic++){
+                volumeFile<<"ITER "+to_string(C.num_iters_)+"\n";
+                areaFile<<"ITER "+to_string(C.num_iters_)+"\n";
+                volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)+"\n";
+                areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)+"\n";
+            }
         }
     }
+    volumeFile.close();
+    areaFile.close();
 }
 
 int main(){
-
-    //for (auto v:C.vertices_){cout<<v.force_[0]<<","<<v.force_[1]<<","<<v.force_[2]<<endl;}
-    //cout<<C.cells_[0].area_tot_<<endl;
-    //cout<<C.cells_[0].area_tot_<<endl;
-    //cout<<C.cells_[0].volume_<<endl;
-    //for (auto v:C.vertices_){cout<<v.pos_[0]<<","<<v.pos_[1]<<","<<v.pos_[2]<<endl;}
-    //cout<<C.cells_[0].volume_<<endl;
-    //dump_data(C);
-    //2024/10/14
     run();
 
 
