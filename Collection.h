@@ -84,7 +84,7 @@ public:
         ifstream file("data/polygon.csv");
         string line;
         int cell_id;
-        Cell* thecell;
+        Cell* thecell=nullptr;
 
         while (getline(file, line)) {
 

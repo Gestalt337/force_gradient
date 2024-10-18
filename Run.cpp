@@ -45,11 +45,17 @@ void run(){
     dump_vtk(C);
     ofstream volumeFile("data/output/volume.txt");
     ofstream areaFile("data/output/area.txt");
+    ofstream forceFile("data/output/force.txt");
     for (int ic=0;ic<C.cells_.size();ic++){
-        volumeFile<<"ITER "+to_string(C.num_iters_)+"\n";
-        areaFile<<"ITER "+to_string(C.num_iters_)+"\n";
-        volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)+"\n";
-        areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)+"\n";
+        volumeFile<<"ITER "+to_string(C.num_iters_)<<endl;
+        areaFile<<"ITER "+to_string(C.num_iters_)<<endl;
+        forceFile<<"ITER "+to_string(C.num_iters_)<<endl;
+        volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)<<endl;
+        areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)<<endl;
+        forceFile<<"Cell"+to_string(C.cells_[ic].id_)+" "<<endl;
+        for (Vertex vertex:C.vertices_){
+            forceFile<<vertex.id_<<" "<<sqrt(pow(vertex.force_[0],2)+pow(vertex.force_[1],2)+pow(vertex.force_[2],2))<<endl;
+        }
     }
     for (long int i=0; i<max_iters-1; ++i){
         C.compute_force();
@@ -58,15 +64,21 @@ void run(){
         if (C.num_iters_%save_iters==0){
             dump_vtk(C);
             for (int ic=0;ic<C.cells_.size();ic++){
-                volumeFile<<"ITER "+to_string(C.num_iters_)+"\n";
-                areaFile<<"ITER "+to_string(C.num_iters_)+"\n";
-                volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)+"\n";
-                areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)+"\n";
+                volumeFile<<"ITER "+to_string(C.num_iters_)<<endl;
+                areaFile<<"ITER "+to_string(C.num_iters_)<<endl;
+                forceFile<<"ITER "+to_string(C.num_iters_)<<endl;
+                volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)<<endl;
+                areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)<<endl;
+                forceFile<<"Cell"+to_string(C.cells_[ic].id_)<<endl;
+                for (Vertex vertex:C.vertices_){
+                    forceFile<<vertex.id_<<" "<<sqrt(pow(vertex.force_[0],2)+pow(vertex.force_[1],2)+pow(vertex.force_[2],2))<<endl;
+                }
             }
         }
     }
     volumeFile.close();
     areaFile.close();
+    forceFile.close();
 }
 
 int main(){
