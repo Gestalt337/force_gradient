@@ -70,7 +70,7 @@ v0 = float(var_d["V0"])
 v0_l = np.full((1,length),v0)[0]
 s0 = float(var_d["s0"])
 s0_l = np.full((1,length),s0)[0]
-t = np.arange(0,length*dt,dt)
+t = np.arange(0,length,1)
 
 fig, ax=plt.subplots(2,1,sharex=True)
 ax[0].set_title("Change in Volume (Cube)")
@@ -81,7 +81,7 @@ ax[0].plot(t,v0_l,label="$v_0$",ls="dashed")
 ax[0].legend()
 
 ax[1].set_title("Change in Surface Area (Cube)")
-ax[1].set_xlabel("time(s)")
+ax[1].set_xlabel("N")
 ax[1].set_ylabel("rel. surf. area")
 plt.plot(t,area_d["Cell0"],label="Cell 0")
 plt.plot(t,s0_l,label="$s_0$",ls="dashed")

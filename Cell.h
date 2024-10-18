@@ -16,7 +16,6 @@ public:
     const int id_;
     vector<Polygon> polygons_;
     array<double, 3> center_;
-    vector<array<double,3>> cjs_;
     double volume_;
     double area_tot_;
 
@@ -24,7 +23,7 @@ public:
         get_center();}
 
     void get_center() {
-        double xs = 0, ys = 0, zs = 0;
+        double xs = 0., ys = 0., zs = 0.;
         int ns = static_cast<int>(vertices_.size());
         for (auto i : vertices_) {
             xs += i->pos_[0];
@@ -36,8 +35,12 @@ public:
 
     void get_volume() {
         double v = 0.;
-        for (size_t j = 0; j < cjs_.size(); j++) {
-            const auto& R = cjs_[j];
+        for (size_t j = 0; j < polygons_.size(); ++j) {
+            array<double,3> R;
+            R[0]=polygons_[j].center_[0]-center_[0];
+            R[1]=polygons_[j].center_[1]-center_[1];
+            R[2]=polygons_[j].center_[2]-center_[2];
+
             int nv = polygons_[j].vertices_.size();
             double crx = 0., cry = 0., crz = 0.;
             for (int i = 0; i < nv; i++) {
@@ -61,8 +64,12 @@ public:
 
     void get_area() {
         double A = 0;
-        for (size_t j = 0; j < cjs_.size(); j++) {
-            const auto& R = cjs_[j];
+        for (size_t j = 0; j < polygons_.size(); ++j) {
+            array<double,3> R;
+            R[0]=polygons_[j].center_[0]-center_[0];
+            R[1]=polygons_[j].center_[1]-center_[1];
+            R[2]=polygons_[j].center_[2]-center_[2];
+
             int nv = polygons_[j].vertices_.size();
             for (int i = 0; i < nv; i++) {
                 auto* vi = polygons_[j].vertices_[i];
@@ -92,7 +99,6 @@ public:
             p_add.center_[1] - center_[1],
             p_add.center_[2] - center_[2]
         };
-        cjs_.push_back(cj);
 
         array<double, 3> r1 = {
             p_add.vertices_[0]->pos_[0] - center_[0],

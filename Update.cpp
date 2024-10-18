@@ -8,9 +8,9 @@ void Collection::compute_force(){
     }
 
     for (Cell& cl:cells_){
-        double V = cl.volume_/V0;
+        double V = cl.volume_;
         double P = 2.*kv*(V-V0);
-        double A = cl.area_tot_/pow(V0,2./3);
+        double A = cl.area_tot_;
         double T = 2.*ka*(A-s0);
         int lenv =cl.vertices_.size();
         for (Vertex* vtx:cl.vertices_){

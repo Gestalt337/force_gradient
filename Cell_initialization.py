@@ -12,6 +12,10 @@ Credit: Tao Zhang zhangtao.scholar@sjtu.edu.cn &
 import pyvoro
 import numpy as np
 
+Lx = float(input("Lx: ")or 8)
+Ly = float(input("Ly: ")or 8)
+Lz = float(input("Lz: ")or 8)
+
 class Vertex:
     def __init__(self,idn,pos):
         self.idn_ = idn
@@ -57,8 +61,8 @@ class Cell:
 
 def generatePoints(Lx, Ly, Lz):
     from datetime import datetime
-    np.random.seed(int(datetime.utcnow().timestamp()))
-    # np.random.seed(2161133)
+    #np.random.seed(int(datetime.utcnow().timestamp()))
+    np.random.seed(2161133)
     Nvertices = int(Lx*Ly*Lz)
     points = []
     for i in range(Nvertices):
@@ -71,16 +75,13 @@ def generatePoints(Lx, Ly, Lz):
     return points 
 
 def voronoi():
-    Lx = int(input("Lx: ")or 8)
-    Ly = int(input("Ly: ")or 8)
-    Lz = int(input("Lz: ")or 8)
     #points = generatePoints(Lx, Ly, Lz)
-    points = [[0.5, 0.5, 0.5]]
+    points = [[0.6, 0.6, 0.6]]
     voroDict = pyvoro.compute_voronoi(
         points,  # point positions
         [[0, Lx], [0, Ly], [0, Lz]],  # limits
         2.0,  # block size
-        periodic = [True, True, True])
+        periodic = [False,False,False])
     return voroDict
 
 def create_data(voroDict):
@@ -88,7 +89,10 @@ def create_data(voroDict):
     nc, i = 0, 0
     for cell in voroDict:
         l=0
-        vs = np.round(cell['vertices'],2).tolist()
+        if int(Lx) != 1:
+            vs = np.round(np.array(cell['vertices'])%Lx,6).tolist()
+        else:
+            vs = np.round(np.array(cell['vertices']),6).tolist()
         rep_d, nrep_d = {}, {}
         for position in vs:
             if len(vertex_l) !=0:
@@ -134,7 +138,7 @@ def create_data(voroDict):
         nc+=1
     return vertex_l,cell_l
 
-#v = voronoi()
+v = voronoi()
 
 def save_data():
     vertex_l,cell_l=create_data(voronoi())
