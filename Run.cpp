@@ -32,7 +32,7 @@ void dump_vtk(Collection& coll){
     }
     size_t pos = wrt.find(to_find);
     wrt.replace(pos, to_find.size(), "POLYGONS "+to_string(p_num)+" "+to_string(p_num+v_num)+"\n");
-    ofstream outFile("data/output/vtk/"+to_string(coll.num_iters_)+".vtk");
+    ofstream outFile("data/output/vtk/topo_"+to_string(coll.num_iters_)+".vtk");
     outFile<<wrt;
     outFile.close();
 }
