@@ -3,7 +3,7 @@
 
 using namespace std;
 
-long int max_iters=50;
+long int max_iters=10;
 int save_iters=1;
 
 void dump_vtk(Collection& coll){

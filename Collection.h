@@ -11,6 +11,7 @@ class Collection
 public:
     vector<Vertex> vertices_;
     vector<Cell> cells_;
+    vector<Polygon> polygons_;
     int id_;
     long int num_iters_=0;
 
