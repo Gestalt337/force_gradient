@@ -18,6 +18,7 @@ public:
     Collection(int id):id_(id) {
         get_vertices();
         get_cells();
+        get_polygons_c();
         get_polygons();
     }
 
@@ -41,6 +42,15 @@ public:
         for (auto& v : vertices_) {
             if (v.id_ == i) {
             return &v;
+            }
+        }
+        return nullptr;
+    }
+
+    Polygon* get_poly_ptr(int i) {
+        for (auto& p : polygons_) {
+            if (p.id_ == i) {
+            return &p;
             }
         }
         return nullptr;
@@ -71,12 +81,13 @@ public:
             // Split the line by commas
             while (std::getline(ss, value, ',')) {
                 row.push_back(value);         // Add each value to the row vector
-        }
-        if (row[0]=="Cell"){cell_id=stoi(row[1]);}
-        else{
-        vector<Vertex*> vts={};
-        for(auto i:row){vts.push_back(get_vertex(stoi(i)));}
-        cells_.push_back(Cell(cell_id,vts));}
+            }
+            if (row[0]=="Cell"){cell_id=stoi(row[1]);}
+            else{
+                vector<Vertex*> vts={};
+                for(auto i:row){vts.push_back(get_vertex(stoi(i)));}
+                cells_.push_back(Cell(cell_id,vts));
+            }
         };
     }
 
@@ -84,7 +95,7 @@ public:
 
         ifstream file("data/polygon.csv");
         string line;
-        int cell_id;
+        int cell_id=-1;
         Cell* thecell=nullptr;
 
         while (getline(file, line)) {
@@ -97,22 +108,45 @@ public:
             while (getline(ss, value, ',')) {
                 row.push_back(value);         // Add each value to the row vector
             }
-            if(row[0]=="Cell"){thecell=get_cell_ptr(stoi(row[1]));}
+            if (row[0]=="Cell"){
+                cell_id=stoi(row[1]);
+                thecell = get_cell_ptr(cell_id);
+            }
             else{
-                vector<Vertex*> vts;
-                int pid=stoi(row[0]);
-                //int is_wall=stoi(row.back());
-                int is_wall = 0;
-                row.erase(row.begin());
-                //row.pop_back();
-
-                for(auto i:row){vts.push_back(get_vertex(stoi(i)));}
-
-                thecell->add_polygon(pid,vts,is_wall);
+                for (string pid:row){
+                    Polygon* p_add = get_poly_ptr(stoi(pid));
+                    thecell->add_polygon(p_add);
+                    p_add->cell_ids_.push_back(cell_id);
+                }
+                thecell->get_volume();
+                thecell->get_area();
             }
         }
-        thecell->get_volume();
-        thecell->get_area();
+    }
+
+    void get_polygons_c(){
+
+        ifstream file("data/polygons.csv");
+        string line;
+
+        while (getline(file, line)) {
+
+            vector<std::string> row;   // Vector to store the split values for each row
+            stringstream ss(line);      // Create a string stream from the line
+            string value;
+
+            // Split the line by commas
+            while (getline(ss, value, ',')) {
+                row.push_back(value);         // Add each value to the row vector
+            }
+            int poly_id = stoi(row[0]);
+            vector<Vertex*> poly_v={};
+            for (int i=1;i<row.size();++i){
+                poly_v.push_back(get_vertex(stoi(row[i])));
+            }
+            polygons_.push_back(Polygon(poly_id,poly_v));
+        }
+
     }
 
     void compute_force();

@@ -12,6 +12,7 @@ public:
     vector<Vertex*> vertices_;
     const int id_;
     array<double, 3> center_;
+    vector<int> cell_ids_={};
     int is_wall_;
 
     Polygon(int id, vector<Vertex*>& vertices) : id_(id), vertices_(vertices) {

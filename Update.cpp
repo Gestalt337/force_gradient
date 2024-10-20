@@ -6,7 +6,6 @@ void Collection::compute_force(){
     for (Vertex &vtx:vertices_){
         vtx.force_={0.,0.,0.};
     }
-
     for (Cell& cl:cells_){
         double V = cl.volume_;
         double P = 2.*kv*(V-V0);
@@ -16,41 +15,41 @@ void Collection::compute_force(){
         for (Vertex* vtx:cl.vertices_){
             double dvdx=0., dvdy=0., dvdz=0.;
             double dadx=0., dady=0., dadz=0.;
-            for (Polygon &poly:cl.polygons_){
-                double Rx = poly.center_[0]-cl.center_[0];
-                double Ry = poly.center_[1]-cl.center_[1];
-                double Rz = poly.center_[2]-cl.center_[2];
-                int lenp = size(poly.vertices_);
+            for (Polygon* poly:cl.polygons_){
+                double Rx = poly->center_[0]-cl.center_[0];
+                double Ry = poly->center_[1]-cl.center_[1];
+                double Rz = poly->center_[2]-cl.center_[2];
+                int lenp = size(poly->vertices_);
                 double M= 1./lenp - 1./lenv;
 
                 for (int i=0;i<lenp;++i){
-                    double xim1 = poly.vertices_[(i-1+lenp)%lenp]->pos_[0];
-                    double yim1 = poly.vertices_[(i-1+lenp)%lenp]->pos_[1];
-                    double zim1 = poly.vertices_[(i-1+lenp)%lenp]->pos_[2];
-                    double xi = poly.vertices_[i]->pos_[0];
-                    double yi = poly.vertices_[i]->pos_[1];
-                    double zi = poly.vertices_[i]->pos_[2];
-                    double xip1 = poly.vertices_[(i+1)%lenp]->pos_[0];
-                    double yip1 = poly.vertices_[(i+1)%lenp]->pos_[1];
-                    double zip1 = poly.vertices_[(i+1)%lenp]->pos_[2];
-                    double xip = poly.vertices_[i]->pos_[0]-cl.center_[0];
-                    double yip = poly.vertices_[i]->pos_[1]-cl.center_[1];
-                    double zip = poly.vertices_[i]->pos_[2]-cl.center_[2];
-                    double xip1p = poly.vertices_[(i+1)%lenp]->pos_[0]-cl.center_[0];
-                    double yip1p = poly.vertices_[(i+1)%lenp]->pos_[1]-cl.center_[1];
-                    double zip1p = poly.vertices_[(i+1)%lenp]->pos_[2]-cl.center_[2];
+                    double xim1 = poly->vertices_[(i-1+lenp)%lenp]->pos_[0];
+                    double yim1 = poly->vertices_[(i-1+lenp)%lenp]->pos_[1];
+                    double zim1 = poly->vertices_[(i-1+lenp)%lenp]->pos_[2];
+                    double xi = poly->vertices_[i]->pos_[0];
+                    double yi = poly->vertices_[i]->pos_[1];
+                    double zi = poly->vertices_[i]->pos_[2];
+                    double xip1 = poly->vertices_[(i+1)%lenp]->pos_[0];
+                    double yip1 = poly->vertices_[(i+1)%lenp]->pos_[1];
+                    double zip1 = poly->vertices_[(i+1)%lenp]->pos_[2];
+                    double xip = poly->vertices_[i]->pos_[0]-cl.center_[0];
+                    double yip = poly->vertices_[i]->pos_[1]-cl.center_[1];
+                    double zip = poly->vertices_[i]->pos_[2]-cl.center_[2];
+                    double xip1p = poly->vertices_[(i+1)%lenp]->pos_[0]-cl.center_[0];
+                    double yip1p = poly->vertices_[(i+1)%lenp]->pos_[1]-cl.center_[1];
+                    double zip1p = poly->vertices_[(i+1)%lenp]->pos_[2]-cl.center_[2];
                     // p and pm are essentially short for prime. But they are subtracted by different lengths.
-                    double xipm = poly.vertices_[i]->pos_[0]-poly.center_[0];
-                    double yipm = poly.vertices_[i]->pos_[1]-poly.center_[1];
-                    double zipm = poly.vertices_[i]->pos_[2]-poly.center_[2];
-                    double xip1pm = poly.vertices_[(i+1)%lenp]->pos_[0]-poly.center_[0];
-                    double yip1pm = poly.vertices_[(i+1)%lenp]->pos_[1]-poly.center_[1];
-                    double zip1pm = poly.vertices_[(i+1)%lenp]->pos_[2]-poly.center_[2];
+                    double xipm = poly->vertices_[i]->pos_[0]-poly->center_[0];
+                    double yipm = poly->vertices_[i]->pos_[1]-poly->center_[1];
+                    double zipm = poly->vertices_[i]->pos_[2]-poly->center_[2];
+                    double xip1pm = poly->vertices_[(i+1)%lenp]->pos_[0]-poly->center_[0];
+                    double yip1pm = poly->vertices_[(i+1)%lenp]->pos_[1]-poly->center_[1];
+                    double zip1pm = poly->vertices_[(i+1)%lenp]->pos_[2]-poly->center_[2];
 
                     double Si=pow((yipm*zip1pm-zipm*yip1pm),2)+pow((xipm*zip1pm-zipm*xip1pm),2)+pow((xipm*yip1pm-yipm*xip1pm),2);
 
-                    if(find(vtx->face_ids_[cl.id_].begin(), vtx->face_ids_[cl.id_].end(), poly.id_) != vtx->face_ids_[cl.id_].end()){
-                        if (poly.vertices_[i]==vtx){
+                    if(find(vtx->face_ids_[cl.id_].begin(), vtx->face_ids_[cl.id_].end(), poly->id_) != vtx->face_ids_[cl.id_].end()){
+                        if (poly->vertices_[i]==vtx){
                             dvdx+=(Ry*(zim1-zip1)+Rz*(yip1-yim1));
                             dvdy-=(Rx*(zim1-zip1)+Rz*(xip1-xim1));
                             dvdz+=(Rx*(yim1-yip1)+Ry*(xip1-xim1));
@@ -59,7 +58,7 @@ void Collection::compute_force(){
                             dady+=1./sqrt(Si) * (yipm*(pow(zip1pm,2)+pow(xip1pm,2))-yip1pm*(zipm*zip1pm+xipm*xip1pm));
                             dadz+=1./sqrt(Si) * (zipm*(pow(xip1pm,2)+pow(yip1pm,2))-zip1pm*(xipm*xip1pm+yipm*yip1pm));
                         }
-                        else if (poly.vertices_[(i+1)%lenp]==vtx){
+                        else if (poly->vertices_[(i+1)%lenp]==vtx){
 
                             dadx+=1./sqrt(Si) * (xip1pm*(pow(yipm,2)+pow(zipm,2))-xipm*(yipm*yip1pm+zipm*zip1pm));
                             dady+=1./sqrt(Si) * (yip1pm*(pow(zipm,2)+pow(xipm,2))-yipm*(zipm*zip1pm+xipm*xip1pm));
@@ -182,8 +181,8 @@ void Collection::update_cell(){
         cell.get_center();
         cell.get_volume();
         cell.get_area();
-        for (Polygon& poly:cell.polygons_){
-            poly.get_center();
+        for (Polygon* poly:cell.polygons_){
+            poly->get_center();
         }
     }
 };

@@ -49,9 +49,10 @@ class Cell:
                 self.vertices_.append(polyvertices)
 
 def main():
-    Lx, Ly, Lz = (1, 1, 1)
-    #points = generatePoints(Lx, Ly, Lz)
-    points = [[0.3,0.3,0.3],[0.7,0.7,0.7]]
+    Lx, Ly, Lz = (8, 8, 8)
+    points = generatePoints(Lx, Ly, Lz)
+    #points = [[0.5,0.5,0.5],[0.5,0.5,1.5],[1.5,0.5,0.5],[1.5,0.5,1.5],[0.5,1.5,0.5],[0.5,1.5,1.5],[1.5,1.5,0.5],[1.5,1.5,1.5]]
+    #points = [[0.3,0.3,0.3],[0.7,0.7,0.7]]
     voroDict = pyvoro.compute_voronoi(
         points,  # point positions
         [[0.0, Lx], [0.0, Ly], [0.0, Lz]],  # limits
@@ -109,9 +110,9 @@ def topologyVoro(voroDict, Lxyz):
         vertexKeys = []
         for vPosition in rvertices:
             if (Lx,Ly, Lz) != (1,1,1):
-                vPosition[0] = vPosition[0] % Lx
-                vPosition[1] = vPosition[1] % Ly
-                vPosition[2] = vPosition[2] % Lz
+                vPosition[0] = vPosition[0]
+                vPosition[1] = vPosition[1]
+                vPosition[2] = vPosition[2]
             else:
                 vPosition[0] = vPosition[0]
                 vPosition[1] = vPosition[1]
@@ -285,16 +286,15 @@ def dumpTopo(vertices, edges, polygons, cells, points, Lxyz):
             polygon = polygons[key]
             file.write("{:d}".format(polygon.id_))
             for vertex in polygon.vertices_:
-                file.write(" {:d}".format(vertex.id_))
+                file.write(",{:d}".format(vertex.id_))
             file.write("\n")
     with open("data/polygon.csv", "w") as file:
         for key in cells:
+            s=''
             file.write("Cell, "+str(key)+"\n")
             for poly in cells[key].polygons_:
-                file.write("{:d}".format(poly.id_))
-                for vertex in poly.vertices_:
-                    file.write(",{:d}".format(vertex.id_))
-                file.write("\n")
+                s+=("{:d},".format(poly.id_))
+            file.write(s[:-1]+"\n")
                 # if count != polygon.id_:
                 #     print("polygons dict disordered {:d} {:d}\n".format(count, polygon.id_))
                 #     exit(1)
