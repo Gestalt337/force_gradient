@@ -41,6 +41,7 @@ void run(){
     filesystem::remove_all("data/output/vtk/");
     filesystem::create_directories("data/output/vtk/");
     //Set up collection
+    cout<<0<<endl;
     Collection C(0);
     dump_vtk(C);
     ofstream volumeFile("data/output/volume.txt");
@@ -53,11 +54,11 @@ void run(){
         volumeFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].volume_)<<endl;
         areaFile<<"Cell"+to_string(C.cells_[ic].id_)+" "+to_string(C.cells_[ic].area_tot_)<<endl;
         //forceFile<<"Cell"+to_string(C.cells_[ic].id_)+" "<<endl;
-        for (Vertex vertex:C.vertices_){
-            forceFile<<vertex.id_<<" "<<sqrt(pow(vertex.force_[0],2)+pow(vertex.force_[1],2)+pow(vertex.force_[2],2))<<endl;
-        }
+//        for (Vertex vertex:C.vertices_){
+//            forceFile<<vertex.id_<<" "<<sqrt(pow(vertex.force_[0],2)+pow(vertex.force_[1],2)+pow(vertex.force_[2],2))<<endl;
+//        }
     }
-    for (long int i=0; i<max_iters-1; ++i){
+    for (long int i=1; i<max_iters-1; ++i){
         cout<<i<<endl;
         C.compute_force();
         C.compute_velocity();
